@@ -261,12 +261,15 @@ function MacLib:Window(Settings)
   
   maximize.Parent = controls
   function MacLib:OpenWin()
-    base.BackgroundTransparency = Settings.AcrylicBlur and 0.05 or 0
-  end
+  base.Visible = true
+  base.BackgroundTransparency = Settings.AcrylicBlur and 0.05 or 0
+end
 
-  function MacLib:CloseWin()
-    base.BackgroundTransparency = 1
-  end
+function MacLib:CloseWin()
+  base.BackgroundTransparency = 1
+  base.Visible = false
+end
+
   local function applyState(button, enabled)
     local size = enabled and windowControlSettings.sizes.enabled or windowControlSettings.sizes.disabled
     local transparency = enabled and windowControlSettings.transparencies.enabled or windowControlSettings.transparencies.disabled
