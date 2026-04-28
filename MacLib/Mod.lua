@@ -260,16 +260,7 @@ function MacLib:Window(Settings)
   uICorner2.Parent = maximize
   
   maximize.Parent = controls
-  function MacLib:OpenWin()
-  base.Visible = true
-  base.BackgroundTransparency = Settings.AcrylicBlur and 0.05 or 0
-end
-
-function MacLib:CloseWin()
-  base.BackgroundTransparency = 1
-  base.Visible = false
-end
-
+  
   local function applyState(button, enabled)
     local size = enabled and windowControlSettings.sizes.enabled or windowControlSettings.sizes.disabled
     local transparency = enabled and windowControlSettings.transparencies.enabled or windowControlSettings.transparencies.disabled
@@ -5846,44 +5837,44 @@ local MultiDropdown = sections.MainSection1:Dropdown({
     end
     print("Mutlidropdown changed:", table.concat(Values, ", "))
   end,
-}, "MultiDropdown")
+  }, "MultiDropdown")
 
-sections.MainSection1:Button({
-  Name = "Update Selection",
-  Callback = function()
-    Dropdown:UpdateSelection("Grapes")
-    MultiDropdown:UpdateSelection({"Banana", "Pineapple"})
-  end,
-})
+  sections.MainSection1:Button({
+    Name = "Update Selection",
+    Callback = function()
+      Dropdown:UpdateSelection("Grapes")
+      MultiDropdown:UpdateSelection({"Banana", "Pineapple"})
+    end,
+  })
 
-sections.MainSection1:Divider()
+  sections.MainSection1:Divider()
 
-sections.MainSection1:Header({
-  Text = "Header #2"
-})
+  sections.MainSection1:Header({
+    Text = "Header #2"
+  })
 
-sections.MainSection1:Paragraph({
-  Header = "Paragraph",
-  Body = "Paragraph body. Lorem ipsum odor amet, consectetuer adipiscing elit. Morbi tempus netus aliquet per velit est gravida."
-})
+  sections.MainSection1:Paragraph({
+    Header = "Paragraph",
+    Body = "Paragraph body. Lorem ipsum odor amet, consectetuer adipiscing elit. Morbi tempus netus aliquet per velit est gravida."
+  })
 
-sections.MainSection1:Label({
-  Text = "Label. Lorem ipsum odor amet, consectetuer adipiscing elit."
-})
+  sections.MainSection1:Label({
+    Text = "Label. Lorem ipsum odor amet, consectetuer adipiscing elit."
+  })
 
-sections.MainSection1:SubLabel({
-  Text = "Sub-Label. Lorem ipsum odor amet, consectetuer adipiscing elit."
-})
+  sections.MainSection1:SubLabel({
+    Text = "Sub-Label. Lorem ipsum odor amet, consectetuer adipiscing elit."
+  })
 
-MacLib:SetFolder("Maclib")
-tabs.Settings:InsertConfigSection("Left")
+  MacLib:SetFolder("Maclib")
+  tabs.Settings:InsertConfigSection("Left")
 
-Window.onUnloaded(function()
-  print("Unloaded!")
-end)
+  Window.onUnloaded(function()
+    print("Unloaded!")
+  end)
 
-tabs.Main:Select()
-MacLib:LoadAutoLoadConfig()
+  tabs.Main:Select()
+  MacLib:LoadAutoLoadConfig()
 end
 
 return MacLib
