@@ -1,49 +1,79 @@
 local Section = {}
 Section.__index = Section
+local New = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Utils/New.lua"))()
 
 function Section.new(tab, data)
     local self = setmetatable({}, Section)
     
-    local Frame = Instance.new("Frame")
-    Frame.Name = data.Name .. "Section"
-    Frame.Parent = tab.Page
-    Frame.Size = UDim2.new(1, 0, 0, 30)
-    Frame.BackgroundColor3 = tab.Theme.Section
-    Frame.BorderSizePixel = 0
-    
-    local Corner = Instance.new("UICorner")
-    Corner.CornerRadius = UDim.new(0, 4)
-    Corner.Parent = Frame
-    
-    local Title = Instance.new("TextLabel")
-    Title.Size = UDim2.new(1, -10, 1, 0)
-    Title.Position = UDim2.new(0, 10, 0, 0)
-    Title.BackgroundTransparency = 1
-    Title.Text = data.Name:upper()
-    Title.TextColor3 = tab.Theme.Accent
-    Title.TextSize = 10
-    Title.Font = Enum.Font.GothamBold
-    Title.TextXAlignment = Enum.TextXAlignment.Left
-    Title.Parent = Frame
+    local Group = New("Frame", {
+        Name = data.Name .. "_Section",
+        Parent = tab.Page,
+        Size = UDim2.new(1, 0, 0, 32),
+        BackgroundTransparency = 1,
+        AutomaticSize = Enum.AutomaticSize.Y
+    })
 
-    local Container = Instance.new("Frame")
-    Container.Name = "Container"
-    Container.Parent = tab.Page
-    Container.Size = UDim2.new(1, 0, 0, 0)
-    Container.BackgroundTransparency = 1
+    local Header = New("TextButton", {
+        Size = UDim2.new(1, 0, 0, 32),
+        BackgroundColor3 = tab.Theme.Section,
+        BackgroundTransparency = 0.4,
+        Text = "",
+        AutoButtonColor = false,
+        Parent = Group
+    })
     
-    local Layout = Instance.new("UIListLayout")
-    Layout.Parent = Container
-    Layout.SortOrder = Enum.SortOrder.LayoutOrder
-    Layout.Padding = UDim.new(0, 5)
+    New("UICorner", {CornerRadius = UDim.new(0, 6), Parent = Header})
+    New("UIStroke", {Color = tab.Theme.Outline, Thickness = 0.8, Parent = Header})
     
-    Layout:GetPropertyChangedSignal("AbsoluteContentSize"):Connect(function()
-        Container.Size = UDim2.new(1, 0, 0, Layout.AbsoluteContentSize.Y)
+    New("Frame", {
+        Size = UDim2.new(0, 2, 0, 14),
+        Position = UDim2.new(0, 8, 0.5, -7),
+        BackgroundColor3 = tab.Theme.Accent,
+        BorderSizePixel = 0,
+        Parent = Header
+    })
+
+    local Title = New("TextLabel", {
+        Size = UDim2.new(1, -40, 1, 0),
+        Position = UDim2.new(0, 18, 0, 0),
+        Text = data.Name,
+        TextColor3 = tab.Theme.Text,
+        Font = Enum.Font.GothamBold,
+        TextSize = 12,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        BackgroundTransparency = 1,
+        Parent = Header
+    })
+
+    local Arrow = New("TextLabel", {
+        Size = UDim2.new(0, 32, 0, 32),
+        Position = UDim2.new(1, -32, 0, 0),
+        Text = "▼",
+        TextColor3 = tab.Theme.SubText,
+        TextSize = 10,
+        BackgroundTransparency = 1,
+        Parent = Header
+    })
+
+    local Content = New("Frame", {
+        Name = "Content",
+        Size = UDim2.new(1, 0, 0, 0),
+        Position = UDim2.new(0, 0, 0, 36),
+        AutomaticSize = Enum.AutomaticSize.Y,
+        BackgroundTransparency = 1,
+        Visible = true,
+        Parent = Group
+    })
+    
+    New("UIListLayout", {Padding = UDim.new(0, 6), Parent = Content})
+
+    Header.MouseButton1Click:Connect(function()
+        Content.Visible = not Content.Visible
+        Arrow.Text = Content.Visible and "▼" or "▲"
     end)
 
-    self.Container = Container
+    self.Container = Content
     self.Theme = tab.Theme
-    
     return self
 end
 
