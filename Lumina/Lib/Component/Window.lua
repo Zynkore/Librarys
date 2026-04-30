@@ -3,6 +3,7 @@ Window.__index = Window
 local New = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Utils/New.lua"))()
 local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
+local RunService = game:GetService("RunService")
 
 function Window.new(data)
     local self = setmetatable({}, Window)
@@ -20,11 +21,10 @@ function Window.new(data)
         Size = UDim2.new(0, 480, 0, 320),
         Position = UDim2.new(0.5, -240, 0.5, -160),
         BackgroundColor3 = self.Theme.Main,
-        BackgroundTransparency = 0.1,
+        BackgroundTransparency = 0.05,
         BorderSizePixel = 0,
         Parent = self.ScreenGui
     })
-    
     New("UICorner", {CornerRadius = UDim.new(0, 12), Parent = self.Main})
     
     local Border = New("UIStroke", {
@@ -32,8 +32,7 @@ function Window.new(data)
         Thickness = 1.8,
         Parent = self.Main
     })
-    
-    local BorderGradient = New("UIGradient", {
+    local BorderGrad = New("UIGradient", {
         Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, self.Theme.Accent),
             ColorSequenceKeypoint.new(0.5, self.Theme.Outline),
@@ -43,24 +42,8 @@ function Window.new(data)
     })
 
     task.spawn(function()
-        while task.wait() do
-            BorderGradient.Rotation = BorderGradient.Rotation + 1
-        end
+        while task.wait() do BorderGrad.Rotation = BorderGrad.Rotation + 1 end
     end)
-
-    local InnerGlow = New("Frame", {
-        Size = UDim2.new(1, 0, 1, 0),
-        BackgroundTransparency = 1,
-        Parent = self.Main
-    })
-    New("UICorner", {CornerRadius = UDim.new(0, 12), Parent = InnerGlow})
-    New("UIStroke", {
-        Color = self.Theme.Accent,
-        Thickness = 2.5,
-        Transparency = 0.8,
-        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
-        Parent = InnerGlow
-    })
 
     local TbarModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Component/Tbar.lua"))()
     self.Tbar = TbarModule.new(self, {Title = data.Title})
@@ -84,25 +67,33 @@ function Window.new(data)
     end)
 
     UserInputService.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseMovement then
-            dragInput = input
-        end
+        if input.UserInputType == Enum.UserInputType.MouseMovement then dragInput = input end
     end)
 
     UserInputService.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.MouseButton1 then
-            dragging = false
-        end
+        if input.UserInputType == Enum.UserInputType.MouseButton1 then dragging = false end
     end)
 
-    game:GetService("RunService").RenderStepped:Connect(function()
+    RunService.RenderStepped:Connect(function()
         if dragging and dragInput then
             local delta = dragInput.Position - dragStart
             self.Main.Position = UDim2.new(startPos.X.Scale, startPos.X.Offset + delta.X, startPos.Y.Scale, startPos.Y.Offset + delta.Y)
         end
     end)
 
+    UserInputService.InputBegan:Connect(function(input, gpe)
+        if not gpe and input.KeyCode == Enum.KeyCode.RightControl then
+            self.Main.Visible = not self.Main.Visible
+        end
+    end)
+    
     return self
 end
+
+function Window:Tab(data)
+    return loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Component/Tab.lua"))().new(self, data)
+end
+
+function Window:Unload() self.ScreenGui:Destroy() end
 
 return Window
