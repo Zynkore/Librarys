@@ -1,16 +1,15 @@
 local Tab = {}
 Tab.__index = Tab
 
-local TweenService = game:GetService("TweenService")
-
 function Tab.new(window, data)
     local self = setmetatable({}, Tab)
     
     self.Window = window
     self.Theme = window.Theme
     
-    local tbar = window.Main:FindFirstChild("Tbar")
-    local container = window.Main:FindFirstChild("Container")
+    local main = window.Main
+    local container = main:WaitForChild("Container")
+    local tbar = main:WaitForChild("Tbar")
     
     self.Button = Instance.new("TextButton")
     self.Button.Name = data.Name .. "Tab"
@@ -31,8 +30,7 @@ function Tab.new(window, data)
     self.Page.Position = UDim2.new(0, 10, 0, 10)
     self.Page.BackgroundTransparency = 1
     self.Page.Visible = false
-    self.Page.ScrollBarThickness = 2
-    self.Page.ScrollBarImageColor3 = self.Theme.Accent
+    self.Page.ScrollBarThickness = 0
     self.Page.CanvasSize = UDim2.new(0, 0, 0, 0)
 
     local Layout = Instance.new("UIListLayout")
@@ -42,9 +40,7 @@ function Tab.new(window, data)
 
     self.Button.MouseButton1Click:Connect(function()
         for _, v in pairs(container:GetChildren()) do
-            if v:IsA("ScrollingFrame") then
-                v.Visible = false
-            end
+            if v:IsA("ScrollingFrame") then v.Visible = false end
         end
         self.Page.Visible = true
     end)
@@ -58,14 +54,12 @@ end
 
 function Tab:Section(data)
     local code = game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Element/Section.lua")
-    local SectionModule = loadstring(code)()
-    return SectionModule.new(self, data)
+    return loadstring(code)().new(self, data)
 end
 
 function Tab:Label(data)
     local code = game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Element/Label.lua")
-    local LabelModule = loadstring(code)()
-    return LabelModule.new(self, data)
+    return loadstring(code)().new(self, data)
 end
 
 return Tab
