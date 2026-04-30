@@ -3,7 +3,6 @@ Window.__index = Window
 
 function Window.new(data)
     local self = setmetatable({}, Window)
-    
     self.Theme = data.Theme
     
     self.ScreenGui = Instance.new("ScreenGui")
@@ -20,10 +19,6 @@ function Window.new(data)
     self.Main.Parent = self.ScreenGui
     
     Instance.new("UICorner", self.Main).CornerRadius = UDim.new(0, 8)
-    
-    local Stroke = Instance.new("UIStroke", self.Main)
-    Stroke.Color = self.Theme.Outline
-    Stroke.Thickness = 1
     
     local TbarModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Component/Tbar.lua"))()
     self.Tbar = TbarModule.new(self, {Title = data.Title})
