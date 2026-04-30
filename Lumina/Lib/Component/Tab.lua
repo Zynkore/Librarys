@@ -13,14 +13,13 @@ function Tab.new(window, data)
     
     self.Button = New("TextButton", {
         Parent = holder,
-        Size = UDim2.new(0, 0, 1, -4),
+        Size = UDim2.new(0, 0, 1, 0),
         AutomaticSize = Enum.AutomaticSize.X,
-        BackgroundColor3 = self.Theme.Secondary,
         BackgroundTransparency = 1,
         Text = data.Name,
         TextColor3 = self.Theme.SubText,
         Font = Enum.Font.GothamMedium,
-        TextSize = 11,
+        TextSize = 12,
         AutoButtonColor = false
     })
     
@@ -36,32 +35,25 @@ function Tab.new(window, data)
     self.Page = New("ScrollingFrame", {
         Name = data.Name .. "Page",
         Parent = window.Container,
-        Size = UDim2.size(1, 0, 1, 0),
-        Position = UDim2.new(0, 50, 0, 0),
+        Size = UDim2.new(1, 0, 1, 0),
+        Position = UDim2.new(0, 40, 0, 0),
         BackgroundTransparency = 1,
         Visible = false,
-        ScrollBarThickness = 0,
-        CanvasSize = UDim2.new(0, 0, 0, 0)
+        ScrollBarThickness = 0
     })
-
-    New("UIListLayout", {
-        Parent = self.Page,
-        Padding = UDim.new(0, 6),
-        SortOrder = Enum.SortOrder.LayoutOrder
-    })
+    New("UIListLayout", {Padding = UDim.new(0, 8), Parent = self.Page})
 
     self.Button.MouseButton1Click:Connect(function()
         for _, v in pairs(window.Container:GetChildren()) do
             if v:IsA("ScrollingFrame") and v.Visible then
-                TweenService:Create(v, TweenInfo.new(0.2), {Position = UDim2.new(0, -50, 0, 0), GroupTransparency = 1}):Play()
+                TweenService:Create(v, TweenInfo.new(0.2), {Position = UDim2.new(0, -40, 0, 0), GroupTransparency = 1}):Play()
                 task.delay(0.2, function() v.Visible = false end)
             end
         end
-        
         self.Page.Visible = true
-        self.Page.Position = UDim2.new(0, 50, 0, 0)
+        self.Page.Position = UDim2.new(0, 40, 0, 0)
         self.Page.GroupTransparency = 1
-        TweenService:Create(self.Page, TweenInfo.new(0.3, Enum.EasingStyle.Quart, Enum.EasingDirection.Out), {Position = UDim2.new(0, 0, 0, 0), GroupTransparency = 0}):Play()
+        TweenService:Create(self.Page, TweenInfo.new(0.3), {Position = UDim2.new(0, 0, 0, 0), GroupTransparency = 0}):Play()
         
         for _, btn in pairs(holder:GetChildren()) do
             if btn:IsA("TextButton") then
@@ -84,8 +76,12 @@ function Tab.new(window, data)
     return self
 end
 
-function Tab:Section(data)
-    return loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Element/Section.lua"))().new(self, data)
-end
+function Tab:Section(data) return loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Element/Section.lua"))().new(self, data) end
+function Tab:Label(data) return loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Element/Label.lua"))().new(self, data) end
+function Tab:Button(data) return loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Element/Button.lua"))().new(self, data) end
+function Tab:Toggle(data) return loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Element/Toggle.lua"))().new(self, data) end
+function Tab:Slider(data) return loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Element/Slider.lua"))().new(self, data) end
+function Tab:Dropdown(data) return loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Element/Dropdown.lua"))().new(self, data) end
+function Tab:Input(data) return loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Element/Input.lua"))().new(self, data) end
 
 return Tab
