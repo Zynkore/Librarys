@@ -1,6 +1,7 @@
 local Window = {}
 Window.__index = Window
 local New = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Utils/New.lua"))()
+local TweenService = game:GetService("TweenService")
 local UserInputService = game:GetService("UserInputService")
 
 function Window.new(data)
@@ -10,7 +11,8 @@ function Window.new(data)
     self.ScreenGui = New("ScreenGui", {
         Name = "Lumina_" .. math.random(100, 999),
         Parent = game:GetService("CoreGui"),
-        ResetOnSpawn = false
+        ResetOnSpawn = false,
+        DisplayOrder = 10
     })
     
     self.Main = New("Frame", {
@@ -18,42 +20,46 @@ function Window.new(data)
         Size = UDim2.new(0, 480, 0, 320),
         Position = UDim2.new(0.5, -240, 0.5, -160),
         BackgroundColor3 = self.Theme.Main,
+        BackgroundTransparency = 0.1,
         BorderSizePixel = 0,
-        ClipsDescendants = true,
         Parent = self.ScreenGui
     })
     
-    New("UICorner", {CornerRadius = UDim.new(0, 10), Parent = self.Main})
+    New("UICorner", {CornerRadius = UDim.new(0, 12), Parent = self.Main})
     
-    local Stroke = New("UIStroke", {
+    local Border = New("UIStroke", {
         Color = self.Theme.Outline,
-        Thickness = 1.6,
+        Thickness = 1.8,
         Parent = self.Main
     })
     
-    New("UIGradient", {
+    local BorderGradient = New("UIGradient", {
         Color = ColorSequence.new({
             ColorSequenceKeypoint.new(0, self.Theme.Accent),
-            ColorSequenceKeypoint.new(1, self.Theme.Outline)
+            ColorSequenceKeypoint.new(0.5, self.Theme.Outline),
+            ColorSequenceKeypoint.new(1, self.Theme.Accent)
         }),
-        Rotation = 45,
-        Parent = Stroke
+        Parent = Border
     })
 
-    local GlowLine = New("Frame", {
-        Size = UDim2.new(1, 0, 0, 2),
-        BackgroundColor3 = self.Theme.Accent,
-        BorderSizePixel = 0,
+    task.spawn(function()
+        while task.wait() do
+            BorderGradient.Rotation = BorderGradient.Rotation + 1
+        end
+    end)
+
+    local InnerGlow = New("Frame", {
+        Size = UDim2.new(1, 0, 1, 0),
+        BackgroundTransparency = 1,
         Parent = self.Main
     })
-    
-    New("UIGradient", {
-        Transparency = NumberSequence.new({
-            NumberSequenceKeypoint.new(0, 1),
-            NumberSequenceKeypoint.new(0.5, 0),
-            NumberSequenceKeypoint.new(1, 1)
-        }),
-        Parent = GlowLine
+    New("UICorner", {CornerRadius = UDim.new(0, 12), Parent = InnerGlow})
+    New("UIStroke", {
+        Color = self.Theme.Accent,
+        Thickness = 2.5,
+        Transparency = 0.8,
+        ApplyStrokeMode = Enum.ApplyStrokeMode.Border,
+        Parent = InnerGlow
     })
 
     local TbarModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Component/Tbar.lua"))()
@@ -96,22 +102,7 @@ function Window.new(data)
         end
     end)
 
-    UserInputService.InputBegan:Connect(function(input, gpe)
-        if not gpe and input.KeyCode == Enum.KeyCode.RightControl then
-            self.Main.Visible = not self.Main.Visible
-        end
-    end)
-    
     return self
-end
-
-function Window:Unload()
-    self.ScreenGui:Destroy()
-end
-
-function Window:Tab(data)
-    local TabModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/main/Lumina/Lib/Component/Tab.lua"))()
-    return TabModule.new(self, data)
 end
 
 return Window
