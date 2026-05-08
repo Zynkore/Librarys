@@ -1765,8 +1765,8 @@ function redzlib:MakeWindow(Configs)
 	local ContainerList = {}
 	function Window:MakeTab(paste, Configs)
 		if type(paste) == "table" then Configs = paste end
-		local TName = Configs[1] or Configs.Title or "Tab!"
-		local TIcon = Configs[2] or Configs.Icon or ""
+		local TName = Configs[1] or Configs.Title or Configs.Name or "Tab!"
+		local TIcon = Configs[2] or Configs.Icon or Configs.Image or ""
 		
 		TIcon = redzlib:GetIcon(TIcon)
 		if not TIcon:find("rbxassetid://") or TIcon:gsub("rbxassetid://", ""):len() < 6 then
