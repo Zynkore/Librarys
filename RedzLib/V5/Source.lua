@@ -2700,4 +2700,8 @@ function redzlib:MakeWindow(Configs)
 	return Window
 end
 
+function redzlib:Notify(Configs)
+  local Title = Configs[1] or Configs.Title or "Notify!"
+end
+
 return redzlib
