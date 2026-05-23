@@ -160,3 +160,40 @@ Section:Button({
 .Settings : table -- Not everything may be updated, but Callback should be correct.
 ```
 
+## Input
+```lua
+sections.MainSection1:Input({
+	Name = "Target",
+	Placeholder = "Username",
+	AcceptedCharacters = "All", -- string: "All", "Numeric", "Alphabetic", "AlphaNumeric"
+	Callback = function(input)
+		print("Target set: ".. input)
+	end,
+}, "TargetInput") -- Flag ( Nil or Name )
+```
+
+### Functions
+```lua
+:UpdateName(<string>)
+:SetVisiblity(<boolean>)
+:GetInput(: string)
+:UpdatePlaceholder(<string>)
+:UpdateText(<string>)
+
+.Text : string
+.IgnoreConfig <boolean>
+.Settings : table -- Not everything may be updated, but Callback should be correct.
+```
+
+## Example using custom `AcceptedCharacters filter`
+```lua
+sections.MainSection1:Input({
+	Name = "Target",
+	Placeholder = "Username",
+	AcceptedCharacters = function(input)
+		return input:gsub("[^a-zA-Z0-9]", "") -- AlphaNumeric sub
+	end,
+	Callback = function(input)
+		print("Target set: ".. input)
+	end,
+}, "TargetInput")
