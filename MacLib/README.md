@@ -68,7 +68,7 @@ local Global_Setting = Window:GlobalSetting({
   Name = "Moderator Join Alerts",
   Default = false,
   Callback = function(State)
-  print("Moderator Join Alerts " .. (State and "Enabled" or "Disabled"))
+    print("Moderator Join Alerts " .. (State and "Enabled" or "Disabled"))
   end,
 })
 ```
