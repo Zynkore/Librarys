@@ -1,5 +1,4 @@
-# Hello!
+# MacLib Example
 
-Mod:
-```text
+```lua
  [?] Nil
