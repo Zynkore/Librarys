@@ -1,9 +1,10 @@
 # MacLib Example
 
-## Loading the `Ui Lib`
+## Loading `Maclib`
 ```lua
 local MacLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/MacLib/Source.lua'))()
 ```
+
 ### Functions
 ```lua
 :Demo() -- Brings up a demo window
@@ -15,7 +16,6 @@ local MacLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/Markhu
 :LoadAutoLoadConfig() -- Loads the config the user selected to automatically load.
 --// To insert a pre-made config section, reference the "Adding tabs" page.
 ```
----
 
 ## Creating `window`
 ```lua
@@ -61,6 +61,102 @@ local Window = MacLib:Window({
 
 .Settings : table -- Not everything may be updated, but Callback should be correct.
 ```
----
 
-## 
+## Adding a `Global Setting`
+```lua
+local Global_Setting = Window:GlobalSetting({
+  Name = "Moderator Join Alerts",
+  Default = false,
+  Callback = function(State)
+    print("Moderator Join Alerts " .. (State and "Enabled" or "Disabled"))
+  end,
+})
+```
+
+## Displaying a `notification`
+```lua
+Window:Notify({
+  Title = "Kuzu Hub",
+  Description = "Hello, World!",
+  Lifetime = 5
+})
+```
+
+### Functions
+```lua
+:UpdateTitle(<string>)
+:UpdateDescription(<string>)
+:Resize(<number>) -- Only X, Y is automatically determined by the content size
+:Cancel()
+```
+
+## Prompting a `dialog`
+```lua
+Window:Dialog({
+  Title = "Kuzu Hub",
+  Description = "Are you sure? This is not reversable and can get you banned in some up to date servers.",
+  Buttons = {
+    {
+      Name = "Confirm",
+      Callback = function()
+        print("Confirmed!")
+      end,
+    },
+    {
+      Name = "Cancel"
+    }
+  }
+})
+```
+
+### Functions
+```lua
+:UpdateTitle(<string>)
+:UpdateDescription(<string>)
+:Cancel()
+```
+
+## Creating a `tab group`
+```lua
+local TabGroup = Window:TabGroup()
+```
+
+## Adding `tabs`
+```lua
+local Tab = TabGroup:Tab({
+  Name = "Cool tab!"
+  Image <string> -- Image can be at maximum 16 pixels wide and 16 pixels tall.
+})
+```
+
+### Functions
+```lua
+:Select()
+:InsertConfigSection(<string> Side)
+```
+
+## Adding `sections`
+```lua
+local Section = Tab:Section({
+  Side <string: "Left", "Right">
+})
+```
+
+## `Button`
+```lua
+Section:Button({
+  Name = "Kill All",
+  Callback = function()
+    print("Killed everyone.")
+  end,
+})
+```
+
+### Functions
+```lua
+:UpdateName(<string>)
+:SetVisiblity(<boolean>)
+
+.Settings : table -- Not everything may be updated, but Callback should be correct.
+```
+
