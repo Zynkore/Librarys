@@ -31,4 +31,36 @@ local Window = MacLib:Window({
 })
 ```
 
-###
+### Functions
+```lua
+:Unload() -- Destroy the window
+.onUnloaded(function(): void) -- Called before the window is unloaded / closed
+
+:SetState(<boolean>) -- Set window visibility
+:GetState(: boolean) -- Get window visibility
+
+:SetNotificationsState(<boolean>) -- Set notification visibility
+:GetNotificationsState(: boolean) -- Get notification visibility
+
+:SetAcrylicBlurState(<boolean>) -- Set UI Blur enabled
+:GetAcrylicBlurState(: boolean) -- Get UI Blur enabled
+
+:SetUserInfoState(<boolean>) -- Show or redact user info
+:GetUserInfoState(: boolean) -- Get User Info Visibility
+
+:SetKeybind(<enum>) -- Set window visibility keybind
+
+:SetSize(<UDim2>) -- Sets the UI size
+:GetSize(: UDim2) -- Returns the current UI Size
+
+:SetScale(<number>) -- Sets the scale of the UI, 1 is the 100& scale (default), 1.5 is 150% scale, 2 is 200%, you get it. ( This uses the UIScale instance, which has several engine bugs and can cause visual issues with certain elements.)
+:GetScale(: number) -- Returns the current scale of the UI
+
+:UpdateTitle(<string>)
+:UpdateSubtitle(<string>)
+
+.Settings : table -- Not everything may be updated, but Callback should be correct.
+```
+---
+
+## 
