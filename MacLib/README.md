@@ -96,15 +96,15 @@ Window:Dialog({
   Title = "Kuzu Hub",
   Description = "Are you sure? This is not reversable and can get you banned in some up to date servers.",
   Buttons = {
-  {
-    Name = "Confirm",
-    Callback = function()
-    print("Confirmed!")
-    end,
-  },
-  {
-    Name = "Cancel"
-  }
+    {
+      Name = "Confirm",
+      Callback = function()
+        print("Confirmed!")
+      end,
+    },
+    {
+      Name = "Cancel"
+    }
   }
 })
 ```
