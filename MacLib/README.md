@@ -68,7 +68,7 @@ local Global_Setting = Window:GlobalSetting({
   Name = "Moderator Join Alerts",
   Default = false,
   Callback = function(State)
-    print("Moderator Join Alerts " .. (State and "Enabled" or "Disabled"))
+  print("Moderator Join Alerts " .. (State and "Enabled" or "Disabled"))
   end,
 })
 ```
@@ -96,15 +96,15 @@ Window:Dialog({
   Title = "Kuzu Hub",
   Description = "Are you sure? This is not reversable and can get you banned in some up to date servers.",
   Buttons = {
-    {
-      Name = "Confirm",
-      Callback = function()
-        print("Confirmed!")
-      end,
-    },
-    {
-      Name = "Cancel"
-    }
+  {
+    Name = "Confirm",
+    Callback = function()
+    print("Confirmed!")
+    end,
+  },
+  {
+    Name = "Cancel"
+  }
   }
 })
 ```
@@ -147,7 +147,7 @@ local Section = Tab:Section({
 Section:Button({
   Name = "Kill All",
   Callback = function()
-    print("Killed everyone.")
+  print("Killed everyone.")
   end,
 })
 ```
@@ -163,12 +163,12 @@ Section:Button({
 ## `Input`
 ```lua
 Section:Input({
-	Name = "Target",
-	Placeholder = "Username",
-	AcceptedCharacters = "All", -- string: "All", "Numeric", "Alphabetic", "AlphaNumeric"
-	Callback = function(input)
-		print("Target set: ".. input)
-	end,
+  Name = "Target",
+  Placeholder = "Username",
+  AcceptedCharacters = "All", -- string: "All", "Numeric", "Alphabetic", "AlphaNumeric"
+  Callback = function(input)
+    print("Target set: ".. input)
+  end,
 }, "TargetInput") -- Flag ( Nil or Name )
 ```
 
@@ -188,28 +188,28 @@ Section:Input({
 ## Example using custom `AcceptedCharacters filter`
 ```lua
 Section:Input({
-	Name = "Target",
-	Placeholder = "Username",
-	AcceptedCharacters = function(input)
-		return input:gsub("[^a-zA-Z0-9]", "") -- AlphaNumeric sub
-	end,
-	Callback = function(input)
-		print("Target set: ".. input)
-	end,
+  Name = "Target",
+  Placeholder = "Username",
+  AcceptedCharacters = function(input)
+    return input:gsub("[^a-zA-Z0-9]", "") -- AlphaNumeric sub
+  end,
+  Callback = function(input)
+    print("Target set: ".. input)
+  end,
 }, "TargetInput")
 ```
 
 ## `Slider`
 ```lua
 Section:Slider({
-	Name = "Walkspeed",
-	Default = 16,
-	Minimum = 0,
-	Maximum = 100,
-	DisplayMethod = "Percent", -- string "Round", "Degrees", "Percent", "Value"
-	Callback = function(Value)
-		print("Changed to ".. Value)
-	end,
+  Name = "Walkspeed",
+  Default = 16,
+  Minimum = 0,
+  Maximum = 100,
+  DisplayMethod = "Percent", -- string "Round", "Degrees", "Percent", "Value"
+  Callback = function(Value)
+    print("Changed to ".. Value)
+  end,
 }, "WalkspeedSlider") -- Flag, Nil or Name
 ```
 
@@ -231,10 +231,10 @@ Section:Toggle({
   Name = "Flight",
   Default = false,
   Callback = function(value)
-    Window:Notify({
-      Title = "Kuzu Hub",
-      Description = (value and "Enabled " or "Disabled ") .. "Flight"
-    })
+  Window:Notify({
+    Title = "Kuzu Hub",
+    Description = (value and "Enabled " or "Disabled ") .. "Flight"
+  })
   end,
 }, "FlightToggle") -- Flag, Nil or Name
 ```
@@ -256,18 +256,18 @@ Section:Toggle({
 Section:Keybind({
   Name = "Reset Inventory",
   Callback = function(binded)
-    Window:Notify({
-      Title = "Kuzu Hub",
-      Description = "Successfully Reset Inventory",
-      Lifetime = 3
-    })
+  Window:Notify({
+    Title = "Kuzu Hub",
+    Description = "Successfully Reset Inventory",
+    Lifetime = 3
+  })
   end,
   onBinded = function(bind)
-    Window:Notify({
-      Title = "Kuzu Hub",
-       Description = "Rebinded Reset Inventory to "..tostring(bind.Name),
-       Lifetime = 3
-    })
+  Window:Notify({
+    Title = "Kuzu Hub",
+    Description = "Rebinded Reset Inventory to "..tostring(bind.Name),
+    Lifetime = 3
+  })
   end,
 }, "ResetInventoryBind") -- Flag, Nil or Name
 ```
@@ -304,14 +304,14 @@ Section:Colorpicker({
   Default = Color3.fromRGB(255,0,0),
   Alpha = 0, -- Transparency
   Callback = function(color, alpha)
-    local r, g, b = math.round(color.R * 255), math.round(color.G * 255), math.round(color.B * 255)
-    local formattedColor = string.format("%d, %d, %d", r, g, b)
+  local r, g, b = math.round(color.R * 255), math.round(color.G * 255), math.round(color.B * 255)
+  local formattedColor = string.format("%d, %d, %d", r, g, b)
 
-    Window:Notify({
-      Title = "Kuzu Hub",
-      Description = string.format("Changed ESP Color\nColor: %s\nAlpha: %.2f", formattedColor, alpha),
-      Lifetime = 3
-    })
+  Window:Notify({
+    Title = "Kuzu Hub",
+    Description = string.format("Changed ESP Color\nColor: %s\nAlpha: %.2f", formattedColor, alpha),
+    Lifetime = 3
+  })
   end,
 }, "ESPColorToggle") -- Flag, Nil or Name
 ```
@@ -332,21 +332,21 @@ Section:Colorpicker({
 ## `Dropdown`
 ```lua
 Section:Dropdown({
-	Name = "Give Weapons",
-	Search = true,
-	Multi = true,
-	Required = false,
-	Options = {"AK-47", "M4A1", "Desert Eagle", "AWP", "MP5", "SPAS-12"},
-	Default = {"M4A1", "AWP"},
-	Callback = function(Value)
-		local Values = {}
-		for _, State in next, Value do
-			if State then
-				table.insert(Values, _)
-			end
-		end
-		print("Selected Weapons:", table.concat(Values, ", "))
-	end,
+  Name = "Give Weapons",
+  Search = true,
+  Multi = true,
+  Required = false,
+  Options = {"AK-47", "M4A1", "Desert Eagle", "AWP", "MP5", "SPAS-12"},
+  Default = {"M4A1", "AWP"},
+  Callback = function(Value)
+    local Values = {}
+    for _, State in next, Value do
+      if State then
+        table.insert(Values, _)
+      end
+    end
+    print("Selected Weapons:", table.concat(Values, ", "))
+  end,
 }, "GiveWeaponsDropdown") -- Flag, Nil or Name
 ```
 
