@@ -124,7 +124,7 @@ local TabGroup = Window:TabGroup()
 ## Adding `tabs`
 ```lua
 local Tab = TabGroup:Tab({
-  Name = "Cool tab!"
+  Name = 'Cool tab!',
   Image <string> -- Image can be at maximum 16 pixels wide and 16 pixels tall.
 })
 ```
