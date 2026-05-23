@@ -160,9 +160,9 @@ Section:Button({
 .Settings : table -- Not everything may be updated, but Callback should be correct.
 ```
 
-## Input
+## `Input`
 ```lua
-sections.MainSection1:Input({
+Section:Input({
 	Name = "Target",
 	Placeholder = "Username",
 	AcceptedCharacters = "All", -- string: "All", "Numeric", "Alphabetic", "AlphaNumeric"
@@ -187,7 +187,7 @@ sections.MainSection1:Input({
 
 ## Example using custom `AcceptedCharacters filter`
 ```lua
-sections.MainSection1:Input({
+Section:Input({
 	Name = "Target",
 	Placeholder = "Username",
 	AcceptedCharacters = function(input)
@@ -197,3 +197,171 @@ sections.MainSection1:Input({
 		print("Target set: ".. input)
 	end,
 }, "TargetInput")
+```
+
+## `Slider`
+```lua
+Section:Slider({
+	Name = "Walkspeed",
+	Default = 16,
+	Minimum = 0,
+	Maximum = 100,
+	DisplayMethod = "Percent", -- string "Round", "Degrees", "Percent", "Value"
+	Callback = function(Value)
+		print("Changed to ".. Value)
+	end,
+}, "WalkspeedSlider") -- Flag, Nil or Name
+```
+
+### Functions
+```lua
+:UpdateName(<string>)
+:SetVisiblity(<boolean>)
+:UpdateValue(<number>)
+:GetValue(: number)
+
+.Value : number
+.IgnoreConfig <boolean>
+.Settings : table -- Not everything may be updated, but Callback should be correct.
+```
+
+## `Toggle`
+```lua
+Section:Toggle({
+  Name = "Flight",
+  Default = false,
+  Callback = function(value)
+    Window:Notify({
+      Title = "Kuzu Hub",
+      Description = (value and "Enabled " or "Disabled ") .. "Flight"
+    })
+  end,
+}, "FlightToggle") -- Flag, Nil or Name
+```
+
+### Functions
+```lua
+:UpdateName(<string>)
+:SetVisiblity(<boolean>)
+:UpdateState(<boolean>)
+:GetState(: boolean)
+
+.State : boolean
+.IgnoreConfig <boolean>
+.Settings : table -- Not everything may be updated, but Callback should be correct.
+```
+
+## `Keybind`
+```lua
+Section:Keybind({
+  Name = "Reset Inventory",
+  Callback = function(binded)
+    Window:Notify({
+      Title = "Kuzu Hub",
+      Description = "Successfully Reset Inventory",
+      Lifetime = 3
+    })
+  end,
+  onBinded = function(bind)
+    Window:Notify({
+      Title = "Kuzu Hub",
+       Description = "Rebinded Reset Inventory to "..tostring(bind.Name),
+       Lifetime = 3
+    })
+  end,
+}, "ResetInventoryBind") -- Flag, Nil or Name
+```
+
+### Functions
+```lua
+:UpdateName(<string>)
+:SetVisiblity(<boolean>)
+:Unbind()
+:Bind(<enum>)
+:GetBind(: enum)
+
+.Bind : enum
+.IgnoreConfig <boolean>
+.Settings : table -- Not everything may be updated, but Callback should be correct.
+```
+
+### More `Keybind`
+```lua
+Section:Keybind({
+  Name <string>
+  Default <enum>
+  Blacklist <table: <... enum>> 
+  Callback <function(): enum>
+  onBinded <function(): enum>
+  onBindHeld <function(): boolean, enum>
+}, <string or nil> Flag)
+```
+
+## `Colorpicker`
+```lua
+Section:Colorpicker({
+  Name = "ESP Color",
+  Default = Color3.fromRGB(255,0,0),
+  Alpha = 0, -- Transparency
+  Callback = function(color, alpha)
+    local r, g, b = math.round(color.R * 255), math.round(color.G * 255), math.round(color.B * 255)
+    local formattedColor = string.format("%d, %d, %d", r, g, b)
+
+    Window:Notify({
+      Title = "Kuzu Hub",
+      Description = string.format("Changed ESP Color\nColor: %s\nAlpha: %.2f", formattedColor, alpha),
+      Lifetime = 3
+    })
+  end,
+}, "ESPColorToggle") -- Flag, Nil or Name
+```
+
+### Functions
+```lua
+:UpdateName(<string>)
+:SetVisibility(<boolean>)
+:SetColor(<color3>)
+:SetAlpha(<number>)
+
+.Color : color3
+.Alpha : number
+.IgnoreConfig <boolean>
+.Settings : table -- Not everything may be updated, but Callback should be correct.
+```
+
+## `Dropdown`
+```lua
+Section:Dropdown({
+	Name = "Give Weapons",
+	Search = true,
+	Multi = true,
+	Required = false,
+	Options = {"AK-47", "M4A1", "Desert Eagle", "AWP", "MP5", "SPAS-12"},
+	Default = {"M4A1", "AWP"},
+	Callback = function(Value)
+		local Values = {}
+		for _, State in next, Value do
+			if State then
+				table.insert(Values, _)
+			end
+		end
+		print("Selected Weapons:", table.concat(Values, ", "))
+	end,
+}, "GiveWeaponsDropdown") -- Flag, Nil or Name
+```
+
+### Functions
+```lua
+:UpdateName(<string>)
+:SetVisiblity(<boolean>)
+:UpdateSelection(<string or number or table>) -- string/number for single, table for multi
+:InsertOptions(<table>)
+:RemoveOptions(<table>)
+:IsOption(<string>: boolean)
+:GetOptions(: table) -- Returns a table of every option and if it's true or false (Example: {"Option 1" = true, "Option 2" = false, "Option 3" = false} etc..)
+:ClearOptions()
+
+.Value : string or table
+.IgnoreConfig <boolean>
+.Settings : table -- Not everything may be updated, but Callback should be correct.
+```
