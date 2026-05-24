@@ -507,12 +507,16 @@ function MarkLib:Window(cfg)
       local titleLbl = row:FindFirstChild("TitleLabel")
       local descLbl  = row:FindFirstChild("DescLabel")
 
-      local track = new("Frame", {
+      local track = new("TextButton", {
         Parent = row,
+        BackgroundColor3 = Color3.fromRGB(65, 65, 80),
         BorderSizePixel = 0,
+        AutoButtonColor = false,
         AnchorPoint = Vector2.new(1, 0.5),
         Position = UDim2.new(1, -10, 0.5, 0),
-        Size = UDim2.new(0, 30, 0, 17)
+        Size = UDim2.new(0, 30, 0, 17),
+        Text = "",
+        ZIndex = row.ZIndex + 1
       })
       new("UICorner", { Parent = track, CornerRadius = UDim.new(1, 0) })
 
@@ -521,22 +525,26 @@ function MarkLib:Window(cfg)
         BackgroundColor3 = Color3.fromRGB(255, 255, 255),
         BorderSizePixel = 0,
         AnchorPoint = Vector2.new(0, 0.5),
-        Size = UDim2.new(0, 13, 0, 13)
+        Size = UDim2.new(0, 13, 0, 13),
+        ZIndex = track.ZIndex + 1
       })
       new("UICorner", { Parent = thumb, CornerRadius = UDim.new(1, 0) })
 
       function updateVisual()
-        track.BackgroundColor3 = tState and Color3.fromRGB(75, 175, 95) or Color3.fromRGB(45, 45, 58)
+        track.BackgroundColor3 = tState and Color3.fromRGB(75, 175, 95) or Color3.fromRGB(65, 65, 80)
         thumb.Position = tState and UDim2.new(1, -15, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
         if flag then MarkLib.Flags[flag] = tState end
       end
       updateVisual()
 
-      row.MouseButton1Down:Connect(function()
+      local function toggle()
         tState = not tState
         updateVisual()
         if cb then cb(tState) end
-      end)
+      end
+
+      row.MouseButton1Down:Connect(toggle)
+      track.MouseButton1Down:Connect(toggle)
 
       local Toggle = {}
 
@@ -672,6 +680,10 @@ function MarkLib:Window(cfg)
   end)
 
   return Win
+end
+
+function MarkLib:Demo()
+  loadstring(game:HttpGet('https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/MarkLib/Example.lua'))()
 end
 
 return MarkLib
