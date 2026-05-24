@@ -16,7 +16,7 @@ local Window = MarkLib:Window({
     Def = UDim2.new(0, 500, 0, 360),
     Min = UDim2.new(0, 300, 0, 200),
     Max = UDim2.new(0, 800, 0, 600)
-  }
+  },
   SaveConfig = true,
   SaveFolder = "HelloBro",
   SaveFile = "config.txt",
@@ -76,7 +76,7 @@ local Window = MarkLib:Window({
     Def = UDim2.new(0, 500, 0, 360),
     Min = UDim2.new(0, 300, 0, 200),
     Max = UDim2.new(0, 800, 0, 600)
-  }
+  },
   SaveConfig = true,
   SaveFolder = "HelloBro",
   SaveFile = "config.txt",
