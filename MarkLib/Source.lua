@@ -29,7 +29,7 @@ function readCfg(folder, file)
 end
 
 function makeDraggable(obj, handle)
-  local dragging, dragStart, startPos = false, nil, nil
+  local dragStart, startPos, dragging = nil, nil, false
   local THRESHOLD = 10
 
   handle.InputBegan:Connect(function(input)
@@ -90,9 +90,10 @@ function makeResizable(win, minSize, maxSize)
       or input.UserInputType == Enum.UserInputType.Touch
     ) then
       local delta = input.Position - startMouse
-      local newW = math.clamp(startSize.X + delta.X, minSize.X.Offset, maxSize.X.Offset)
-      local newH = math.clamp(startSize.Y + delta.Y, minSize.Y.Offset, maxSize.Y.Offset)
-      win.Size = UDim2.new(0, newW, 0, newH)
+      win.Size = UDim2.new(0,
+        math.clamp(startSize.X + delta.X, minSize.X.Offset, maxSize.X.Offset), 0,
+        math.clamp(startSize.Y + delta.Y, minSize.Y.Offset, maxSize.Y.Offset)
+      )
     end
   end)
   UIS.InputEnded:Connect(function(input)
@@ -108,64 +109,43 @@ function resolveIcon(icon)
   return icon or ""
 end
 
-function makeRow(parent, opts, h)
-  local height = h or (opts.Desc and opts.Desc ~= "" and 46 or 34)
-  local btn = new("TextButton", {
-    Parent = parent,
-    BackgroundColor3 = Color3.fromRGB(20, 20, 26),
-    BorderSizePixel = 0,
-    AutoButtonColor = false,
-    Size = UDim2.new(1, 0, 0, height),
-    Text = "",
-    LayoutOrder = #parent:GetChildren()
-  })
-  new("UICorner", { Parent = btn, CornerRadius = UDim.new(0, 7) })
+function connectInput(btn, cb)
+  local touchMoved = false
+  btn.InputBegan:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+      touchMoved = false
+    end
+  end)
+  btn.InputChanged:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch then
+      touchMoved = true
+    end
+  end)
+  btn.InputEnded:Connect(function(input)
+    if input.UserInputType == Enum.UserInputType.Touch and not touchMoved then
+      cb()
+    end
+  end)
+  btn.MouseButton1Down:Connect(cb)
+end
 
-  new("TextLabel", {
-    Parent = btn,
-    BackgroundTransparency = 1,
-    Position = UDim2.new(0, 10, 0, 0),
-    Size = UDim2.new(1, -60, 0, opts.Desc and opts.Desc ~= "" and 26 or height),
-    Text = opts.Title or "",
-    TextColor3 = Color3.fromRGB(210, 210, 220),
-    TextSize = 12,
-    Font = Enum.Font.GothamBold,
-    TextXAlignment = Enum.TextXAlignment.Left,
-    TextYAlignment = opts.Desc and opts.Desc ~= "" and Enum.TextYAlignment.Bottom or Enum.TextYAlignment.Center,
-    Name = "TitleLabel"
-  })
-
-  if opts.Desc and opts.Desc ~= "" then
-    new("TextLabel", {
-      Parent = btn,
-      BackgroundTransparency = 1,
-      Position = UDim2.new(0, 10, 0, 26),
-      Size = UDim2.new(1, -60, 0, 16),
-      Text = opts.Desc,
-      TextColor3 = Color3.fromRGB(75, 75, 92),
-      TextSize = 10,
-      Font = Enum.Font.Gotham,
-      TextXAlignment = Enum.TextXAlignment.Left,
-      Name = "DescLabel"
-    })
-  end
-
-  return btn
+function MarkLib:Demo()
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/MarkLib/Example.lua"))()
 end
 
 function MarkLib:Window(cfg)
-  local title     = cfg.Title or "MarkLib"
-  local subtitle  = cfg.SubTitle or ""
+  local title = cfg.Title or "MarkLib"
+  local subtitle = cfg.SubTitle or ""
   local resizable = cfg.Resizable == true
-  local drag      = cfg.Drag ~= false
-  local rtitle    = cfg.RTitle ~= false
-  local saveConf  = cfg.SaveConfig == true
-  local folder    = cfg.SaveFolder or "MarkLib"
-  local file      = cfg.SaveFile or "config.json"
-  local sizeT     = cfg.Size or {}
-  local defSize   = sizeT.Def or UDim2.new(0, 500, 0, 360)
-  local minSize   = sizeT.Min or UDim2.new(0, 300, 0, 200)
-  local maxSize   = sizeT.Max or UDim2.new(0, 800, 0, 600)
+  local drag = cfg.Drag ~= false
+  local rtitle = cfg.RTitle ~= false
+  local saveConf = cfg.SaveConfig == true
+  local folder = cfg.SaveFolder or "MarkLib"
+  local file = cfg.SaveFile or "config.json"
+  local sizeT = cfg.Size or {}
+  local defSize = sizeT.Def or UDim2.new(0, 500, 0, 360)
+  local minSize = sizeT.Min or UDim2.new(0, 300, 0, 200)
+  local maxSize = sizeT.Max or UDim2.new(0, 800, 0, 600)
 
   local vp = workspace.CurrentCamera.ViewportSize
   local defX = (vp.X - defSize.X.Offset) / 2
@@ -344,7 +324,7 @@ function MarkLib:Window(cfg)
 
   function Win:MakeTab(opts)
     local tabTitle = opts.Title or "Tab"
-    local tabIcon  = resolveIcon(opts.Icon)
+    local tabIcon = resolveIcon(opts.Icon)
 
     local btn = new("TextButton", {
       Parent = sidebar,
@@ -361,7 +341,6 @@ function MarkLib:Window(cfg)
     new("UICorner", { Parent = btn, CornerRadius = UDim.new(0, 6) })
 
     local btnTextLabel = nil
-
     if tabIcon ~= "" then
       new("ImageLabel", {
         Parent = btn,
@@ -417,9 +396,7 @@ function MarkLib:Window(cfg)
     table.insert(tabs, tabObj)
     if #tabs == 1 then setActiveTab(tabObj) end
 
-    btn.MouseButton1Down:Connect(function()
-      setActiveTab(tabObj)
-    end)
+    connectInput(btn, function() setActiveTab(tabObj) end)
 
     local Tab = {}
 
@@ -429,11 +406,8 @@ function MarkLib:Window(cfg)
 
     function Tab:SetTitle(t)
       tabTitle = t
-      if tabIcon == "" then
-        btn.Text = t
-      elseif btnTextLabel then
-        btnTextLabel.Text = t
-      end
+      if tabIcon == "" then btn.Text = t
+      elseif btnTextLabel then btnTextLabel.Text = t end
     end
 
     function Tab:SetIcon(icon)
@@ -444,15 +418,13 @@ function MarkLib:Window(cfg)
 
     function Tab:Section(opts)
       local sTitle = opts.Title or "Section"
-      local sIcon  = resolveIcon(opts.Icon)
+      local sIcon = resolveIcon(opts.Icon)
 
-      local sFrame = new("TextButton", {
+      local sFrame = new("Frame", {
         Parent = panel,
         BackgroundColor3 = Color3.fromRGB(18, 18, 23),
         BorderSizePixel = 0,
-        AutoButtonColor = false,
         Size = UDim2.new(1, 0, 0, 26),
-        Text = "",
         LayoutOrder = #panel:GetChildren()
       })
       new("UICorner", { Parent = sFrame, CornerRadius = UDim.new(0, 7) })
@@ -496,24 +468,58 @@ function MarkLib:Window(cfg)
       })
 
       local Section = {}
-
       function Section:Toggle(o) return Tab:Toggle(o, sectionItems) end
       function Section:Button(o) return Tab:Button(o, sectionItems) end
-
       return Section
     end
 
     function Tab:Toggle(opts, customParent)
       local tState = opts.Def == true
-      local flag   = opts.Flag
+      local flag = opts.Flag
       local target = customParent or panel
-      local cb     = opts.Callback
+      local cb = opts.Callback
+      local hasDesc = opts.Desc and opts.Desc ~= ""
 
       if flag then MarkLib.Flags[flag] = tState end
 
-      local row      = makeRow(target, opts)
-      local titleLbl = row:FindFirstChild("TitleLabel")
-      local descLbl  = row:FindFirstChild("DescLabel")
+      local row = new("TextButton", {
+        Parent = target,
+        BackgroundColor3 = Color3.fromRGB(20, 20, 26),
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Size = UDim2.new(1, 0, 0, hasDesc and 46 or 34),
+        Text = "",
+        LayoutOrder = #target:GetChildren()
+      })
+      new("UICorner", { Parent = row, CornerRadius = UDim.new(0, 7) })
+
+      local titleLbl = new("TextLabel", {
+        Parent = row,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 10, 0, 0),
+        Size = UDim2.new(1, -60, 0, hasDesc and 26 or 34),
+        Text = opts.Title or "",
+        TextColor3 = Color3.fromRGB(210, 210, 220),
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextYAlignment = hasDesc and Enum.TextYAlignment.Bottom or Enum.TextYAlignment.Center
+      })
+
+      local descLbl = nil
+      if hasDesc then
+        descLbl = new("TextLabel", {
+          Parent = row,
+          BackgroundTransparency = 1,
+          Position = UDim2.new(0, 10, 0, 26),
+          Size = UDim2.new(1, -60, 0, 16),
+          Text = opts.Desc,
+          TextColor3 = Color3.fromRGB(75, 75, 92),
+          TextSize = 10,
+          Font = Enum.Font.Gotham,
+          TextXAlignment = Enum.TextXAlignment.Left
+        })
+      end
 
       local track = new("TextButton", {
         Parent = row,
@@ -551,36 +557,20 @@ function MarkLib:Window(cfg)
         if cb then cb(tState) end
       end
 
-      local touchMoved = false
-      row.InputBegan:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch then
-          touchMoved = false
-        end
-      end)
-      row.InputChanged:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch then
-          touchMoved = true
-        end
-      end)
-      row.InputEnded:Connect(function(input)
-        if input.UserInputType == Enum.UserInputType.Touch and not touchMoved then
-          toggle()
-        end
-      end)
-      row.MouseButton1Down:Connect(toggle)
-      track.MouseButton1Down:Connect(toggle)
+      connectInput(row, toggle)
+      connectInput(track, toggle)
 
       local Toggle = {}
 
       function Toggle:SetTitle(t)
-        if titleLbl then titleLbl.Text = t end
+        titleLbl.Text = t
       end
 
       function Toggle:SetDesc(d)
         if descLbl then
           descLbl.Text = d
         else
-          new("TextLabel", {
+          descLbl = new("TextLabel", {
             Parent = row,
             BackgroundTransparency = 1,
             Position = UDim2.new(0, 10, 0, 26),
@@ -589,8 +579,7 @@ function MarkLib:Window(cfg)
             TextColor3 = Color3.fromRGB(75, 75, 92),
             TextSize = 10,
             Font = Enum.Font.Gotham,
-            TextXAlignment = Enum.TextXAlignment.Left,
-            Name = "DescLabel"
+            TextXAlignment = Enum.TextXAlignment.Left
           })
           row.Size = UDim2.new(1, 0, 0, 46)
         end
@@ -611,11 +600,47 @@ function MarkLib:Window(cfg)
 
     function Tab:Button(opts, customParent)
       local target = customParent or panel
-      local cb     = opts.Callback
+      local cb = opts.Callback
+      local hasDesc = opts.Desc and opts.Desc ~= ""
 
-      local row      = makeRow(target, opts)
-      local titleLbl = row:FindFirstChild("TitleLabel")
-      local descLbl  = row:FindFirstChild("DescLabel")
+      local row = new("TextButton", {
+        Parent = target,
+        BackgroundColor3 = Color3.fromRGB(20, 20, 26),
+        BorderSizePixel = 0,
+        AutoButtonColor = false,
+        Size = UDim2.new(1, 0, 0, hasDesc and 46 or 34),
+        Text = "",
+        LayoutOrder = #target:GetChildren()
+      })
+      new("UICorner", { Parent = row, CornerRadius = UDim.new(0, 7) })
+
+      local titleLbl = new("TextLabel", {
+        Parent = row,
+        BackgroundTransparency = 1,
+        Position = UDim2.new(0, 10, 0, 0),
+        Size = UDim2.new(1, -40, 0, hasDesc and 26 or 34),
+        Text = opts.Title or "",
+        TextColor3 = Color3.fromRGB(210, 210, 220),
+        TextSize = 12,
+        Font = Enum.Font.GothamBold,
+        TextXAlignment = Enum.TextXAlignment.Left,
+        TextYAlignment = hasDesc and Enum.TextYAlignment.Bottom or Enum.TextYAlignment.Center
+      })
+
+      local descLbl = nil
+      if hasDesc then
+        descLbl = new("TextLabel", {
+          Parent = row,
+          BackgroundTransparency = 1,
+          Position = UDim2.new(0, 10, 0, 26),
+          Size = UDim2.new(1, -40, 0, 16),
+          Text = opts.Desc,
+          TextColor3 = Color3.fromRGB(75, 75, 92),
+          TextSize = 10,
+          Font = Enum.Font.Gotham,
+          TextXAlignment = Enum.TextXAlignment.Left
+        })
+      end
 
       new("TextLabel", {
         Parent = row,
@@ -629,31 +654,30 @@ function MarkLib:Window(cfg)
         Font = Enum.Font.GothamBold
       })
 
-      row.MouseButton1Down:Connect(function()
+      connectInput(row, function()
         if cb then cb() end
       end)
 
       local Button = {}
 
       function Button:SetTitle(t)
-        if titleLbl then titleLbl.Text = t end
+        titleLbl.Text = t
       end
 
       function Button:SetDesc(d)
         if descLbl then
           descLbl.Text = d
         else
-          new("TextLabel", {
+          descLbl = new("TextLabel", {
             Parent = row,
             BackgroundTransparency = 1,
             Position = UDim2.new(0, 10, 0, 26),
-            Size = UDim2.new(1, -60, 0, 16),
+            Size = UDim2.new(1, -40, 0, 16),
             Text = d,
             TextColor3 = Color3.fromRGB(75, 75, 92),
             TextSize = 10,
             Font = Enum.Font.Gotham,
-            TextXAlignment = Enum.TextXAlignment.Left,
-            Name = "DescLabel"
+            TextXAlignment = Enum.TextXAlignment.Left
           })
           row.Size = UDim2.new(1, 0, 0, 46)
         end
@@ -704,10 +728,6 @@ function MarkLib:Window(cfg)
   end)
 
   return Win
-end
-
-function MarkLib:Demo()
-  loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/MarkLib/Example.lua"))()
 end
 
 return MarkLib
