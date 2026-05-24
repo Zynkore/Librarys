@@ -543,6 +543,22 @@ function MarkLib:Window(cfg)
         if cb then cb(tState) end
       end
 
+      local touchMoved = false
+      row.InputBegan:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+          touchMoved = false
+        end
+      end)
+      row.InputChanged:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch then
+          touchMoved = true
+        end
+      end)
+      row.InputEnded:Connect(function(input)
+        if input.UserInputType == Enum.UserInputType.Touch and not touchMoved then
+          toggle()
+        end
+      end)
       row.MouseButton1Down:Connect(toggle)
       track.MouseButton1Down:Connect(toggle)
 
