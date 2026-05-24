@@ -1,4 +1,4 @@
-local MarkLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/MarkLib/Source.luau"))()
+local MarkLib = loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/MarkLib/Source.lua"))()
 
 local Win = MarkLib:Window({
   Title = "Mark Hub",
