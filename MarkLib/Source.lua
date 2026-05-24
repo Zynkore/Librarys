@@ -30,27 +30,35 @@ end
 
 function makeDraggable(obj, handle)
   local dragging, dragStart, startPos = false, nil, nil
+  local THRESHOLD = 10
+
   handle.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1
     or input.UserInputType == Enum.UserInputType.Touch then
-      dragging = true
       dragStart = input.Position
       startPos = obj.Position
+      dragging = false
     end
   end)
   UIS.InputChanged:Connect(function(input)
-    if dragging and (
+    if dragStart and (
       input.UserInputType == Enum.UserInputType.MouseMovement
       or input.UserInputType == Enum.UserInputType.Touch
     ) then
       local delta = input.Position - dragStart
-      obj.Position = UDim2.new(0, startPos.X.Offset + delta.X, 0, startPos.Y.Offset + delta.Y)
+      if not dragging and (math.abs(delta.X) > THRESHOLD or math.abs(delta.Y) > THRESHOLD) then
+        dragging = true
+      end
+      if dragging then
+        obj.Position = UDim2.new(0, startPos.X.Offset + delta.X, 0, startPos.Y.Offset + delta.Y)
+      end
     end
   end)
   UIS.InputEnded:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1
     or input.UserInputType == Enum.UserInputType.Touch then
       dragging = false
+      dragStart = nil
     end
   end)
 end
@@ -699,7 +707,7 @@ function MarkLib:Window(cfg)
 end
 
 function MarkLib:Demo()
-  loadstring(game:HttpGet('https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/MarkLib/Example.lua'))()
+  loadstring(game:HttpGet("https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/MarkLib/Example.lua"))()
 end
 
 return MarkLib
