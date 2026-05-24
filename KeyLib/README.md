@@ -2,7 +2,7 @@
 
 ### Load `Lib`
 ```luau
-local KeyLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/seu/repo/main/KeyLib.lua'))()
+local KeyLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/KeyLib/Source.luau'))()
 ```
 
 ### Settings
