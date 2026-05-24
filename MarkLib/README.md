@@ -2,7 +2,7 @@
 
 ### Loading the `Lib`
 ```luau
-local MarkLib = loadstring(game:HttpGet(''))()
+local MarkLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/MarkLib/Source.lua'))()
 ```
 
 ### Create `window`
@@ -31,9 +31,41 @@ local Tab = Window:MakeTab({
 })
 ```
 
+### Create `Section`
+```luau
+local Section = Tab:Section({
+  Title = "Cool section",
+  Icon = nil
+})
+```
+
+### Create `Button`
+```luau
+Section:Button({
+  Title = "Print 'Hello'",
+  Desc = "No desc...",
+  Callback = function()
+    print('Hello')
+  end
+})
+```
+
+### Create `Toggle`
+```luau
+Section:Toggle({
+  Title = "Cool toggle",
+  Desc = "Cool desc",
+  Flag = "HelloToggle",
+  Def = false,
+  Callback = function(state)
+    print("Toggle: ", state)
+  end
+})
+```
+
 ### Full example
 ```luau
-local MarkLib = loadstring(game:HttpGet(''))()
+local MarkLib = loadstring(game:HttpGet('https://raw.githubusercontent.com/MarkhubOfc/Librarys/refs/heads/main/MarkLib/Source.lua'))()
 
 local Window = MarkLib:Window({
   Title = "Cool Hub!",
@@ -66,7 +98,7 @@ Section:Toggle({
   Flag = "AutoFarm",
   Def = false,
   Callback = function(state)
-    print("AutoFarm:", state)
+    print("AutoFarm: ", state)
   end
 })
 
