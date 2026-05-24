@@ -5,20 +5,20 @@ local Players = game:GetService("Players")
 local UIS = game:GetService("UserInputService")
 local RS = game:GetService("RunService")
 
-local function new(c, p)
+function new(c, p)
   local k = Instance.new(c)
   for pp, v in pairs(p or {}) do k[pp] = v end
   return k
 end
 
-local function saveCfg(folder, file, data)
+function saveCfg(folder, file, data)
   pcall(function()
     if not isfolder(folder) then makefolder(folder) end
     writefile(folder .. "/" .. file, data)
   end)
 end
 
-local function readCfg(folder, file)
+function readCfg(folder, file)
   local ok, res = pcall(function()
     local path = folder .. "/" .. file
     if isfolder(folder) and isfile(path) then
@@ -28,7 +28,7 @@ local function readCfg(folder, file)
   return ok and res or nil
 end
 
-local function makeDraggable(obj, handle)
+function makeDraggable(obj, handle)
   local dragging, dragStart, startPos = false, nil, nil
   handle.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.MouseButton1
@@ -55,7 +55,7 @@ local function makeDraggable(obj, handle)
   end)
 end
 
-local function makeResizable(win, minSize, maxSize)
+function makeResizable(win, minSize, maxSize)
   local handle = new("Frame", {
     Parent = win,
     BackgroundColor3 = Color3.fromRGB(70, 70, 80),
@@ -95,12 +95,12 @@ local function makeResizable(win, minSize, maxSize)
   end)
 end
 
-local function resolveIcon(icon)
+function resolveIcon(icon)
   if type(icon) == "number" then return "rbxassetid://" .. icon end
   return icon or ""
 end
 
-local function makeRow(parent, opts, h)
+function makeRow(parent, opts, h)
   local height = h or (opts.Desc and opts.Desc ~= "" and 46 or 34)
   local btn = new("TextButton", {
     Parent = parent,
@@ -304,11 +304,12 @@ function MarkLib:Window(cfg)
 
   local Win = {}
   local listeners = {}
+  local unloadCallbacks = {}
   local state = true
   local tabs = {}
   local activeTab = nil
 
-  local function fireListeners(s)
+  function fireListeners(s)
     for _, cb in ipairs(listeners) do
       if cb.state == s then
         if type(cb.code) == "function" then
@@ -321,7 +322,7 @@ function MarkLib:Window(cfg)
     end
   end
 
-  local function setActiveTab(tabObj)
+  function setActiveTab(tabObj)
     if activeTab then
       activeTab.btn.BackgroundColor3 = Color3.fromRGB(20, 20, 25)
       activeTab.btn.TextColor3 = Color3.fromRGB(110, 110, 125)
@@ -502,7 +503,7 @@ function MarkLib:Window(cfg)
 
       if flag then MarkLib.Flags[flag] = tState end
 
-      local row = makeRow(target, opts)
+      local row      = makeRow(target, opts)
       local titleLbl = row:FindFirstChild("TitleLabel")
       local descLbl  = row:FindFirstChild("DescLabel")
 
@@ -524,7 +525,7 @@ function MarkLib:Window(cfg)
       })
       new("UICorner", { Parent = thumb, CornerRadius = UDim.new(1, 0) })
 
-      local function updateVisual()
+      function updateVisual()
         track.BackgroundColor3 = tState and Color3.fromRGB(75, 175, 95) or Color3.fromRGB(45, 45, 58)
         thumb.Position = tState and UDim2.new(1, -15, 0.5, 0) or UDim2.new(0, 2, 0.5, 0)
         if flag then MarkLib.Flags[flag] = tState end
@@ -547,7 +548,7 @@ function MarkLib:Window(cfg)
         if descLbl then
           descLbl.Text = d
         else
-          local newDesc = new("TextLabel", {
+          new("TextLabel", {
             Parent = row,
             BackgroundTransparency = 1,
             Position = UDim2.new(0, 10, 0, 26),
@@ -580,7 +581,7 @@ function MarkLib:Window(cfg)
       local target = customParent or panel
       local cb     = opts.Callback
 
-      local row = makeRow(target, opts)
+      local row      = makeRow(target, opts)
       local titleLbl = row:FindFirstChild("TitleLabel")
       local descLbl  = row:FindFirstChild("DescLabel")
 
@@ -635,8 +636,6 @@ function MarkLib:Window(cfg)
 
     return Tab
   end
-
-  local unloadCallbacks = {}
 
   function Win:OnUnload(code)
     table.insert(unloadCallbacks, code)
