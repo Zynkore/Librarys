@@ -83,6 +83,7 @@ function makeResizable(win, minSize, maxSize)
       resizing = true
       startMouse = input.Position
       startSize = win.AbsoluteSize
+      input.Handled = true
     end
   end)
   UIS.InputChanged:Connect(function(input)
@@ -111,21 +112,29 @@ function resolveIcon(icon)
 end
 
 function connectInput(btn, cb)
-  local touchMoved = false
+  local touchStart, touchMoved = nil, false
   btn.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.Touch then
+      touchStart = input.Position
       touchMoved = false
+      input.Handled = true
+    elseif input.UserInputType == Enum.UserInputType.MouseButton1 then
       input.Handled = true
     end
   end)
   btn.InputChanged:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch then
-      touchMoved = true
+    if input.UserInputType == Enum.UserInputType.Touch and touchStart then
+      local delta = input.Position - touchStart
+      if math.abs(delta.X) > 6 or math.abs(delta.Y) > 6 then
+        touchMoved = true
+      end
     end
   end)
   btn.InputEnded:Connect(function(input)
-    if input.UserInputType == Enum.UserInputType.Touch and not touchMoved then
-      cb()
+    if input.UserInputType == Enum.UserInputType.Touch then
+      if not touchMoved then cb() end
+      touchStart = nil
+      touchMoved = false
     end
   end)
   btn.MouseButton1Down:Connect(cb)
@@ -136,6 +145,7 @@ function MarkLib:Demo()
 end
 
 function MarkLib:Window(cfg)
+  cfg = cfg or {}
   local title = cfg.Title or "MarkLib"
   local subtitle = cfg.SubTitle or ""
   local resizable = cfg.Resizable == true
@@ -224,6 +234,7 @@ function MarkLib:Window(cfg)
     Parent = header,
     BackgroundColor3 = Color3.fromRGB(180, 55, 55),
     BorderSizePixel = 0,
+    AutoButtonColor = false,
     AnchorPoint = Vector2.new(1, 0.5),
     Position = UDim2.new(1, -10, 0.5, 0),
     Size = UDim2.new(0, 14, 0, 14),
