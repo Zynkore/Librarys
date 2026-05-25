@@ -33,6 +33,7 @@ function makeDraggable(obj, handle)
   local THRESHOLD = 10
 
   handle.InputBegan:Connect(function(input)
+    if input.Handled then return end
     if input.UserInputType == Enum.UserInputType.MouseButton1
     or input.UserInputType == Enum.UserInputType.Touch then
       dragStart = input.Position
@@ -114,6 +115,7 @@ function connectInput(btn, cb)
   btn.InputBegan:Connect(function(input)
     if input.UserInputType == Enum.UserInputType.Touch then
       touchMoved = false
+      input.Handled = true
     end
   end)
   btn.InputChanged:Connect(function(input)
