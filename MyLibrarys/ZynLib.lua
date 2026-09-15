@@ -42,8 +42,6 @@ function Library:MakeWindow(Config)
     Color = Color3.fromRGB(70, 60, 95),
     Parent = Window
   })
-  task.wait(5)
-  s:Destroy()
 end
 
 return Library
