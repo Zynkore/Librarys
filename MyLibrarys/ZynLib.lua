@@ -116,10 +116,4 @@ function Library:MakeWindow(Config)
   })
 end
 
-Library:MakeWindow({
-  Title = "Window title",
-  StartMinimized = false,
-  UICorner = true,
-  CornerRadius = UDim.new(0, 6)
-})
 return Library
