@@ -1,9 +1,10 @@
 local Library = {}
 
 local GeneralModule = loadstring(game:HttpGet("https://raw.githubusercontent.com/Zynkore/Hub/refs/heads/main/Modules/Universal/General.luau"))()
+local IconLib = GeneralModule:GetHttp("https://raw.githubusercontent.com/tlredz/Library/refs/heads/main/redz-V5-remake/Utils/Icons.lua")
 
 local WS = GeneralModule:Service("Workspace")
-local CoreGui = (gethui and gethui() or GeneralModule:Service("CoreGui"))
+local CoreGui = (gethui and cloneref and cloneref(gethui()) or GeneralModule:Service("CoreGui"))
 function Library:MakeWindow(Config)
   local Title = Config.Title or Config.Name or "Missing title"
   local StartMinimized = Config.StartMinimized or Config.startMinimized or Config.startminimized or Config.sm or Config.Sm or Config.SM or Config.sM or false
@@ -61,7 +62,7 @@ function Library:MakeWindow(Config)
   local TitleBar = GeneralModule:new("Frame", {
     Name = GenerateRandomName(999),
     Size = UDim2.new(0, Window.AbsoluteSize.X, 0, 35),
-    BackgroundColor3 = Color3.fromRGB(8, 9, 12),
+    BackgroundColor3 = Color3.fromRGB(57, 55, 55),
     BorderColor3 = Color3.fromRGB(9, 59, 164),
     Parent = Window
   })
@@ -86,10 +87,11 @@ function Library:MakeWindow(Config)
   local IsWindowMinimized = StartMinimized
   local MinimizeButton = GeneralModule:new("ImageButton", {
     Name = GenerateRandomName(999),
-    Position = UDim2.new(0, TitleBar.AbsoluteSize.X - 53, 0, 1.25),
+    Position = UDim2.new(0, TitleBar.AbsoluteSize.X - 68, 0, 1.25),
     Size = UDim2.new(0, 30, 0, TitleBar.AbsoluteSize.Y - 3),
-    Image = "rbxassetid://10747384394",
+    Image = "rbxassetid://" .. (IsWindowMinimized and IconLib.plus or IconLib.minus),
     ImageColor3 = Color3.fromRGB(255, 255, 255),
+    BackgroundTransparency = 0.840,
     Parent = TitleBar
   })
   MinimizeButton.MouseButton1Click:Connect(function()
@@ -97,23 +99,43 @@ function Library:MakeWindow(Config)
     if IsWindowMinimized then
       MinimizeButtonSizeY = tonumber(Window.AbsoluteSize.Y)
       Window.Size = UDim2.new(0, Window.AbsoluteSize.X, 0, TitleBar.AbsoluteSize.Y)
+      MinimizeButton.Image = "rbxassetid://" .. (IsWindowMinimized and IconLib.plus or IconLib.minus)
     else
       Window.Size = UDim2.new(0, Window.AbsoluteSize.X, 0, MinimizeButtonSizeY)
+      MinimizeButton.Image = "rbxassetid://" .. (IsWindowMinimized and IconLib.plus or IconLib.minus)
     end
   end)
   if IsWindowMinimized then
     MinimizeButtonSizeY = tonumber(Window.AbsoluteSize.Y)
-    Window.Size = UDim2.new(0, Window.AbsoluteSize.X, 0, MinimizeButtonSizeY)
+    Window.Size = UDim2.new(0, Window.AbsoluteSize.X, 0, TitleBar.AbsoluteSize.Y)
+    MinimizeButton.Image = "rbxassetid://" .. (IsWindowMinimized and IconLib.plus or IconLib.minus)
+  end
+  if UICorner == true then
+    GeneralModule:new("UICorner", {
+      Name = GenerateRandomName(999),
+      CornerRadius = CornerRadius,
+      Parent = MinimizeButton
+    })
+    GeneralModule:new("UIStroke", {
+      Name = GenerateRandomName(999),
+      Color = Color3.fromRGB(105, 105, 105),
+      Thickness = 0.8,
+      Parent = MinimizeButton
+    })
   end
   
   local CloseButton = GeneralModule:new("ImageButton", {
     Name = GenerateRandomName(999),
-    Position = UDim2.new(0, TitleBar.AbsoluteSize.X - 38, 0, 1.25),
+    Position = UDim2.new(0, TitleBar.AbsoluteSize.X - 36, 0, 1.25),
     Size = UDim2.new(0, 30, 0, TitleBar.AbsoluteSize.Y - 3),
-    Image = "rbxassetid://10747384394",
+    Image = "rbxassetid://" .. IconLib.x,
     ImageColor3 = Color3.fromRGB(255, 255, 255),
+    BackgroundTransparency = 0.840,
     Parent = TitleBar
   })
+  CloseButton.MouseButton1Click:Connect(function()
+    s:Destroy()
+  end)
 end
 
 return Library
